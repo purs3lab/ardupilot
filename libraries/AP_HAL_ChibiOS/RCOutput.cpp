@@ -80,7 +80,7 @@ const uint8_t RCOutput::NUM_GROUPS = ARRAY_SIZE(RCOutput::pwm_group_list);
 
 // event mask for triggering a PWM send
 // EVT_PWM_SEND  = 11
-static const eventmask_t EVT_PWM_START  = EVENT_MASK(12);
+//static const eventmask_t EVT_PWM_START  = EVENT_MASK(12);
 // EVT_PWM_SYNTHETIC_SEND  = 13
 static const eventmask_t EVT_PWM_SEND_NEXT  = EVENT_MASK(14);
 static const eventmask_t EVT_LED_SEND  = EVENT_MASK(15);
@@ -1258,7 +1258,7 @@ bool RCOutput::get_output_mode_banner(char banner_msg[], uint8_t banner_msg_len)
     }
 
     // create array of each channel's mode
-    output_mode ch_mode[chan_offset + NUM_GROUPS * ARRAY_SIZE(pwm_group::chan)] = {};
+    output_mode * ch_mode = new output_mode[chan_offset + NUM_GROUPS * ARRAY_SIZE(pwm_group::chan)];
     bool have_nonzero_modes = false;
 
 #if HAL_WITH_IO_MCU
@@ -1316,6 +1316,7 @@ bool RCOutput::get_output_mode_banner(char banner_msg[], uint8_t banner_msg_len)
         append_to_banner(banner_msg, banner_msg_len, ch_mode[final_index], curr_mode_lowest_ch + 1, final_index + 1);
     }
 
+	delete[] ch_mode;
     return true;
 }
 
@@ -2678,7 +2679,7 @@ void RCOutput::timer_info(ExpandingString &str)
 #if HAL_DSHOT_ENABLED
     for (auto &group : pwm_group_list) {
         uint32_t target_freq;
-        bool at_least_freq;
+        bool at_least_freq = false;
 #if HAL_SERIAL_ESC_COMM_ENABLED
         if (&group == serial_group) {
             target_freq = 19200 * 10;
@@ -2686,6 +2687,7 @@ void RCOutput::timer_info(ExpandingString &str)
 #endif // HAL_SERIAL_ESC_COMM_ENABLED
         if (is_dshot_protocol(group.current_mode)) {
             target_freq = protocol_bitrate(group.current_mode) * DSHOT_BIT_WIDTH_TICKS;
+			at_least_freq = false;
             if (_dshot_esc_type == DSHOT_ESC_BLHELI_S || _dshot_esc_type == DSHOT_ESC_BLHELI_EDT_S) {
                 at_least_freq = true;
             }

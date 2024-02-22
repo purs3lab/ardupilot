@@ -77,7 +77,7 @@ char *tmpnam(char s[L_tmpnam]);
 #define SEEK_END 2
 #endif
 
-#define FILE APFS_FILE
+//#define FILE APFS_FILE
 #define fopen(p,m) apfs_fopen(p,m)
 #define fprintf(stream, format, args...) apfs_fprintf(stream, format, ##args)
 #define fflush(s) apfs_fflush(s)
@@ -98,7 +98,7 @@ char *tmpnam(char s[L_tmpnam]);
 #define freopen(pathname, mode, stream) apfs_freopen(pathname, mode, stream)
 #define rename(oldpath, newpath) apfs_rename(oldpath, newpath)
 #if !defined(__APPLE__)
-#define remove(pathname) apfs_remove(pathname)
+//#define remove(pathname) apfs_remove(pathname)
 int sprintf(char *str, const char *format, ...);
 #endif
 

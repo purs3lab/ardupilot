@@ -127,7 +127,7 @@ def _set_pkgconfig_crosscompilation_wrapper(cfg):
         original_validatecfg(kw)
 
     cfg.validate_cfg = new_validate_cfg
-
+import pprint
 def configure(cfg):
     _filter_supported_c_compilers('gcc', 'clang')
     _filter_supported_cxx_compilers('g++', 'clang++')
@@ -160,3 +160,8 @@ def configure(cfg):
     if cfg.env.COMPILER_CXX == 'clang++':
         cfg.env.CXXFLAGS += cfg.env.CLANG_FLAGS
         cfg.env.LINKFLAGS_cxxprogram += cfg.env.CLANG_FLAGS
+
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(cfg.__dict__)
+    print("B++++++++++++++++++++++++++++++>>>>>")
+    pp.pprint(cfg.exec_dict['bld'].__dict__)

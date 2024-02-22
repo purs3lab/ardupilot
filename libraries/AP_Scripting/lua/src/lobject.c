@@ -8,9 +8,10 @@
 #define LUA_CORE
 
 #include "lprefix.h"
-
-
+#define LOCALE 0
+#if LOCALE
 #include <locale.h>
+#endif
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>

@@ -9,10 +9,12 @@
 
 #include "lprefix.h"
 
-
+#define LOCALE 0
 #include <ctype.h>
 #include <errno.h>
+#if LOCALE
 #include <locale.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

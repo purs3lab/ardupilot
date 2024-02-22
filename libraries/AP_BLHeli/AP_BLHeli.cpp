@@ -1421,7 +1421,7 @@ void AP_BLHeli::init(uint32_t mask, AP_HAL::RCOutput::output_mode otype)
         }
     }
     motor_mask = mask;
-    debug("ESC: %u motors mask=0x%08lx", num_motors, mask);
+    debug("ESC: %u motors mask=0x%08ux", num_motors, mask);
 
     // check if we have a combination of reversible and normal
     mixed_type = (mask != (mask & channel_reversible_mask.get())) && (channel_reversible_mask.get() != 0);

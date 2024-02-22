@@ -188,7 +188,8 @@ LUALIB_API char *(luaL_buffinitsize) (lua_State *L, luaL_Buffer *B, size_t sz);
 ** initial structure 'luaL_Stream' (it may contain other fields
 ** after that initial structure).
 */
-
+#include <stdio.h>
+#define FILE APFS_FILE
 #define LUA_FILEHANDLE          "FILE*"
 
 

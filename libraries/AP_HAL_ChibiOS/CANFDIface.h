@@ -50,6 +50,8 @@
 
 static_assert(HAL_CAN_RX_QUEUE_SIZE <= 254, "Invalid CAN Rx queue size");
 
+typedef FDCAN_GlobalTypeDef CanType;
+static FDCAN_GlobalTypeDef* const Can[HAL_NUM_CAN_IFACES] = { HAL_CAN_BASE_LIST };
 /**
  * Single CAN iface.
  */
@@ -251,7 +253,7 @@ public:
 
     // CAN Peripheral register structure, pointing at base
     // register. Indexed by locical interface number
-    static constexpr CanType* const Can[HAL_NUM_CAN_IFACES] = { HAL_CAN_BASE_LIST };
+    static constexpr CanType* const Can[HAL_NUM_CAN_IFACES] = { NULL, NULL };
 
 protected:
     bool add_to_rx_queue(const CanRxItem &rx_item) override {

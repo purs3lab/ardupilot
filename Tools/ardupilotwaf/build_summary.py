@@ -262,10 +262,21 @@ def build_summary_post_fun(bld):
     if not bld.env.AP_PROGRAM_AS_STLIB:
         bld.add_post_fun(_build_summary)
 
+import pprint
 @feature('cprogram', 'cxxprogram')
 @before_method('process_rule')
 def init_summary_data(self):
+    print("****EXecuting rules****")
+    print(self.name)
+    pprint.pprint(self.__dict__)
+
     self.build_summary = dict(target=self.name)
+
+@before_method('process_rule')
+def build_bc(self):
+    print("****Post EXecuting rules****")
+    print(self.name)
+    pprint.pprint(self.__dict__)
 
 def options(opt):
     g = opt.ap_groups['build']

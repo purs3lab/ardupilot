@@ -525,7 +525,7 @@ int AP_Filesystem_FATFS::fsync(int fileno)
     return 0;
 }
 
-off_t AP_Filesystem_FATFS::lseek(int fileno, off_t position, int whence)
+int32_t AP_Filesystem_FATFS::lseek(int fileno, int32_t position, int whence)
 {
     FRESULT res;
     FIL *fh;

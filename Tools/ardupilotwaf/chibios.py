@@ -713,6 +713,7 @@ def build(bld):
         bld.env.LIB += ['DSP']
     bld.env.LIB += ['ch']
     bld.env.LIBPATH += ['modules/ChibiOS/']
+    bld.env.LIBPATH += ['/home/arslan/projects/ardupilot/ardupilot/./install/lib/']
     if bld.env.ENABLE_CRASHDUMP:
         bld.env.LINKFLAGS += ['-Wl,-whole-archive', 'modules/ChibiOS/libcc.a', '-Wl,-no-whole-archive']
     # list of functions that will be wrapped to move them out of libc into our

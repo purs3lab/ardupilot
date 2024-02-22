@@ -171,6 +171,8 @@ public:
      */
     virtual void timer_tick(void) { }
 
+	virtual void timer_tick(uint64_t ns) {}
+
     /*
       setup for serial output to an ESC using the given
       baudrate. Assumes 1 start bit, 1 stop bit, LSB first and 8

@@ -749,9 +749,13 @@ int lua_dirlist(lua_State *L) {
   remove a file
  */
 int lua_removefile(lua_State *L) {
+#if 0
+TODO:
     binding_argcheck(L, 1);
     const char *filename = luaL_checkstring(L, 1);
     return luaL_fileresult(L, remove(filename) == 0, filename);
+#endif
+	return 0;
 }
 
 // Manual binding to allow SRV_Channels table to see safety state

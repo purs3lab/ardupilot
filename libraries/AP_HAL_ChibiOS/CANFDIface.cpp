@@ -101,7 +101,7 @@ using namespace ChibiOS;
 #define Debug(fmt, args...)
 #endif
 
-constexpr CANIface::CanType* const CANIface::Can[];
+//constexpr CANIface::CanType* const CANIface::Can[];
 static ChibiOS::CANIface* can_ifaces[HAL_NUM_CAN_IFACES];
 
 uint8_t CANIface::next_interface;
@@ -174,7 +174,7 @@ CANIface::CANIface(uint8_t index) :
     if (index >= HAL_NUM_CAN_IFACES) {
          AP_HAL::panic("Bad CANIface index.");
     } else {
-        can_ = Can[index];
+        can_ = NULL;//CANIface::Can[index];
     }
 }
 
@@ -309,7 +309,7 @@ bool CANIface::computeTimings(const uint32_t target_bitrate, Timings& out_timing
      *
      */
     if ((target_bitrate != (pclk / (prescaler * (1 + solution.bs1 + solution.bs2)))) || !solution.isValid()) {
-        Debug("Timings: Invalid Solution %lu %lu %d %d %lu \n", pclk, prescaler, int(solution.bs1), int(solution.bs2), (pclk / (prescaler * (1 + solution.bs1 + solution.bs2))));
+        //Debug("Timings: Invalid Solution %lu %lu %d %d %lu \n", pclk, prescaler, int(solution.bs1), int(solution.bs2), (pclk / (prescaler * (1 + solution.bs1 + solution.bs2))));
         return false;
     }
 
@@ -1122,26 +1122,26 @@ void CANIface::get_stats(ExpandingString &str)
     CriticalSectionLocker lock;
     str.printf("------- Clock Config -------\n"
                "CAN_CLK_FREQ:   %luMHz\n"
-               "Std Timings: bitrate=%lu presc=%u\n"
+               "Std Timings: bitrate=%u presc=%u\n"
                "sjw=%u bs1=%u bs2=%u sample_point=%f%%\n"
-               "FD Timings:  bitrate=%lu presc=%u\n"
+               "FD Timings:  bitrate=%u presc=%u\n"
                "sjw=%u bs1=%u bs2=%u sample_point=%f%%\n"
                "------- CAN Interface Stats -------\n"
-               "tx_requests:    %lu\n"
-               "tx_rejected:    %lu\n"
-               "tx_overflow:    %lu\n"
-               "tx_success:     %lu\n"
-               "tx_timedout:    %lu\n"
-               "tx_abort:       %lu\n"
-               "rx_received:    %lu\n"
-               "rx_overflow:    %lu\n"
-               "rx_errors:      %lu\n"
-               "num_busoff_err: %lu\n"
-               "num_events:     %lu\n"
-               "ECR:            %lx\n"
-               "fdf_rx:         %lu\n"
-               "fdf_tx_req:     %lu\n"
-               "fdf_tx:         %lu\n",
+               "tx_requests:    %u\n"
+               "tx_rejected:    %u\n"
+               "tx_overflow:    %u\n"
+               "tx_success:     %u\n"
+               "tx_timedout:    %u\n"
+               "tx_abort:       %u\n"
+               "rx_received:    %u\n"
+               "rx_overflow:    %u\n"
+               "rx_errors:      %u\n"
+               "num_busoff_err: %u\n"
+               "num_events:     %u\n"
+               "ECR:            %x\n"
+               "fdf_rx:         %u\n"
+               "fdf_tx_req:     %u\n"
+               "fdf_tx:         %u\n",
                STM32_FDCANCLK/1000000UL,
                _bitrate, unsigned(timings.prescaler),
                unsigned(timings.sjw), unsigned(timings.bs1),

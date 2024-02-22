@@ -9,9 +9,11 @@
 
 #include "lprefix.h"
 
-
+#define LOCALE 0 
 #include <errno.h>
+#if LOCALE
 #include <locale.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -359,6 +361,7 @@ static int os_difftime (lua_State *L) {
 
 
 static int os_setlocale (lua_State *L) {
+#if LOCALE
   static const int cat[] = {LC_ALL, LC_COLLATE, LC_CTYPE, LC_MONETARY,
                       LC_NUMERIC, LC_TIME};
   static const char *const catnames[] = {"all", "collate", "ctype", "monetary",
@@ -366,6 +369,7 @@ static int os_setlocale (lua_State *L) {
   const char *l = luaL_optstring(L, 1, NULL);
   int op = luaL_checkoption(L, 2, "all", catnames);
   lua_pushstring(L, setlocale(cat[op], l));
+#endif 
   return 1;
 }
 
