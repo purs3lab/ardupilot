@@ -178,7 +178,7 @@ class Board:
 
         cfg.env.prepend_value('INCLUDES', [
             cfg.srcnode.find_dir('libraries/AP_Common/missing').abspath(),
-			"/home/arslan/projects/ardupilot/ardupilot/install/include/c++/v1/"
+            cfg.srcnode.find_dir("install/include/c++/v1/").abspath()
         ])
         if os.path.exists(os.path.join(env.SRCROOT, '.vscode/c_cpp_properties.json')):
             # change c_cpp_properties.json configure the VSCode Intellisense env
@@ -199,6 +199,7 @@ class Board:
         # Use a dictionary instead of the convetional list for definitions to
         # make easy to override them. Convert back to list before consumption.
         env.DEFINES = {}
+        print(env)
 
         # potentially set extra defines from an environment variable:
         if cfg.options.define is not None:
@@ -1080,6 +1081,7 @@ class chibios(Board):
             '-fno-builtin-vprintf',
             '-fno-builtin-vfprintf',
             '-fno-builtin-puts',
+            '-flto=thin',
 #'-mno-thumb-interwork',
             '-mthumb',
             '--specs=nano.specs',
@@ -1124,6 +1126,7 @@ class chibios(Board):
             '-uchThdExit',
             '-fno-common',
             '-nostartfiles',
+            '-flto=thin',
 #            '-mno-thumb-interwork',
             '-mthumb',
             '--specs=nano.specs',

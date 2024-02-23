@@ -382,7 +382,6 @@ class build_intel_hex(Task.Task):
 @feature('ch_ap_program')
 @after_method('process_source')
 def chibios_firmware(self):
-    print("After process_source *******************")
     self.link_task.always_run = True
 
     link_output = self.link_task.outputs[0]
@@ -530,7 +529,7 @@ def configure(cfg):
     cfg.find_program('make', var='MAKE')
     #cfg.objcopy = cfg.find_program('%s-%s'%(cfg.env.TOOLCHAIN,'objcopy'), var='OBJCOPY', mandatory=True)
     cfg.find_program('arm-none-eabi-objcopy', var='OBJCOPY')
-    cfg.find_program("llvm-link", var='LLVM-LINK')
+    cfg.find_program("llvm-link", var='LLVMLINK')
     env = cfg.env
     bldnode = cfg.bldnode.make_node(cfg.variant)
     def srcpath(path):
