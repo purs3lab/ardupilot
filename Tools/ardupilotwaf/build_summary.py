@@ -37,7 +37,7 @@ import sys
 
 from waflib import Context, Logs, Node
 from waflib.Configure import conf
-from waflib.TaskGen import before_method, feature
+from waflib.TaskGen import before_method, feature, after_method
 
 MAX_TARGETS = 20
 
@@ -266,16 +266,38 @@ import pprint
 @feature('cprogram', 'cxxprogram')
 @before_method('process_rule')
 def init_summary_data(self):
-    print("****EXecuting rules****")
-    print(self.name)
-    pprint.pprint(self.__dict__)
-
     self.build_summary = dict(target=self.name)
 
-@before_method('process_rule')
+from waflib import Task
+from sys import stderr,stdout
+class genBC(Task.Task):
+#    run_str='llvm-link ${SRC} -o ${TGT}'
+
+    def keyword(self):
+        return "Generating BC"
+    def run(self):
+        print("HHHHHHHHHHHHHHHHHHHHHHHHHHHEEEEEEE")
+        pprint.pprint(self.__dict__)
+        print(self.outputs)
+        inputs = ' '.join(str(item) for item in self.source)
+        cmd = ["/home/arslan/projects/LBC/checkedC-12/checkedc-clang/buildmk/bin/llvm-link "] + [self.source] + [" -o "] +  [str(self.target)]
+        result = ' '.join(str(item) for item in cmd)
+        cmd2 = "/home/arslan/projects/LBC/checkedC-12/checkedc-clang/buildmk/bin/llvm-link " + inputs + " -o " + str(self.target)
+        print(result)
+        print(cmd2)
+        self.exec_command(cmd2, stdout=stdout,stderr=stderr)
+
+@feature('cprogram', 'cxxprogram')
+@after_method('apply_link')
 def build_bc(self):
     print("****Post EXecuting rules****")
     print(self.name)
+    print(self.link_task.inputs)
+    bc_generator = self.create_task('genBC', source=self.link_task.inputs, target=self.link_task.outputs[0].change_ext('.bc'))
+    print(self.link_task.inputs)
+    print(self.link_task.outputs[0].change_ext('.bc'))
+    bc_generator.set_run_after(self.link_task)
+#    print(self.tasks[-1].inputs)
     pprint.pprint(self.__dict__)
 
 def options(opt):

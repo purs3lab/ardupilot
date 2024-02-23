@@ -4,7 +4,7 @@ from __future__ import print_function
 from waflib import Build, ConfigSet, Configure, Context, Errors, Logs, Options, Utils
 from waflib.Configure import conf
 from waflib.Scripting import run_command
-from waflib.TaskGen import before_method, feature
+from waflib.TaskGen import before_method, feature, after_method
 import os.path, os
 from collections import OrderedDict
 
@@ -255,6 +255,7 @@ def ap_common_vehicle_libraries(bld):
 
 _grouped_programs = {}
 
+
 @conf
 def ap_program(bld,
                program_groups='bin',
@@ -357,6 +358,10 @@ def ap_stlib_target(self):
     if self.target.startswith('#'):
         self.target = self.target[1:]
     self.target = '#%s' % os.path.join('lib', self.target)
+
+@after_method('process_rule')
+def buildBC(self):
+    print("After method")
 
 @conf
 def ap_find_tests(bld, use=[], DOUBLE_PRECISION_SOURCES=[]):

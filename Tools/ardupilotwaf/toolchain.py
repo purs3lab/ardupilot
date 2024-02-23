@@ -164,4 +164,4 @@ def configure(cfg):
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(cfg.__dict__)
     print("B++++++++++++++++++++++++++++++>>>>>")
-    pp.pprint(cfg.exec_dict['bld'].__dict__)
+#pp.pprint(cfg.exec_dict['bld'].__dict__)
