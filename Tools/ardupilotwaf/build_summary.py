@@ -268,28 +268,6 @@ import pprint
 def init_summary_data(self):
     self.build_summary = dict(target=self.name)
 
-from waflib import Task
-from sys import stderr,stdout
-class genBC(Task.Task):
-#run_str='${LLVM-LINK} ${SRC} -o ${TGT}'
-    always_run = True
-    def keyword(self):
-        return "Generating Bitcode for "+self.target
-    def run(self):
-        inputs = ' '.join(str(item) for item in self.source)
-#        cmd = ["/home/arslan/projects/LBC/checkedC-12/checkedc-clang/buildmk/bin/llvm-link "] + [self.source] + [" -o "] +  [str(self.target)]
-#        print(' '.join(str(item) for item in cmd))
-        self.exec_command(self.env.get_flat('LLVMLINK') + " " + inputs + " -o " + str(self.target))
-
-
-@feature('cprogram', 'cxxprogram')
-@after_method('apply_link')
-def build_bc(self):
-    bc_generator = self.create_task('genBC', source=self.link_task.inputs, target=self.link_task.outputs[0].change_ext('.bc'))
-    bc_generator.set_inputs(self.link_task.inputs)
-    bc_generator.set_outputs(self.link_task.outputs[0].change_ext('.bc'))
-    bc_generator.set_run_after(self.link_task)
-
 def options(opt):
     g = opt.ap_groups['build']
 

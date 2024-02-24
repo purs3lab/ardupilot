@@ -1245,7 +1245,7 @@ class chibios(Board):
 
         try:
             import intelhex
-            env.HAVE_INTEL_HEX = True
+            env.HAVE_INTEL_HEX = False
             cfg.msg("Checking for intelhex module:", 'OK')
         except Exception:
             cfg.msg("Checking for intelhex module:", 'disabled', color='YELLOW')

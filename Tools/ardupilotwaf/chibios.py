@@ -152,7 +152,7 @@ class generate_bin(Task.Task):
     INTF_MEMORY_START = 0x08000000
     INTF_MEMORY_END = 0x08FFFFFF
     def keyword(self):
-        return "Generating"
+        return "Generating Bin"
     def run(self):
         if self.env.HAS_EXTERNAL_FLASH_SECTIONS:
             ret = self.split_sections()
@@ -161,6 +161,7 @@ class generate_bin(Task.Task):
             return ret
         else:
             cmd = [self.env.get_flat('OBJCOPY'), '-O', 'binary', self.inputs[0].relpath(),  self.outputs[0].relpath()]
+            print(cmd)
             self.exec_command(cmd)
 
     '''list sections and split into two binaries based on section's location in internal, external or in ram'''
@@ -353,7 +354,8 @@ class build_abin(Task.Task):
     run_str='${TOOLS_SCRIPTS}/make_abin.sh ${SRC} ${TGT}'
     always_run = True
     def keyword(self):
-        return "Generating"
+        return "Generating abin:"
+        print(run_str)
     def __str__(self):
         return self.outputs[0].path_from(self.generator.bld.bldnode)
 
@@ -375,9 +377,36 @@ class build_intel_hex(Task.Task):
     run_str='${TOOLS_SCRIPTS}/make_intel_hex.py ${SRC} ${FLASH_RESERVE_START_KB}'
     always_run = True
     def keyword(self):
-        return "Generating"
+        return "Generating INTEL HEX:"
     def __str__(self):
         return self.outputs[0].path_from(self.generator.bld.bldnode)
+
+from waflib import Task
+from sys import stderr,stdout
+map_file = {}
+class genBC(Task.Task):
+#run_str='${LLVM-LINK} ${SRC} -o ${TGT}'
+    always_run = True
+    def keyword(self):
+        return "Generating Bitcode for "+self.target
+    def run(self):
+        inputs = ' '.join(str(item) for item in map_file[self.target])
+#        cmd = ["/home/arslan/projects/LBC/checkedC-12/checkedc-clang/buildmk/bin/llvm-link "] + [self.source] + [" -o "] +  [str(self.target)]
+#        print(' '.join(str(item) for item in cmd))
+        print(self.env.get_flat('LLVMLINK') + " " + inputs + " -o " + str(self.target))
+#self.exec_command(self.env.get_flat('LLVMLINK') + " " + inputs + " -o " + str(self.target))
+        self.exec_command("touch " + str(self.target)) 
+
+'''
+@feature('ch_ap_program')
+@after_method('apply_link')
+def build_bc(self):
+    print("Setting task for:" + self.link_task.outputs[0].change_ext('.bc').name)
+    bc_generator = self.create_task('genBC', source=self.link_task.inputs, target=self.link_task.outputs[0].change_ext('.bc'))
+    bc_generator.set_inputs(self.link_task.inputs)
+    bc_generator.set_outputs(self.link_task.outputs[0].change_ext('.bc'))
+    bc_generator.set_run_after(self.link_task)
+'''
 
 @feature('ch_ap_program')
 @after_method('process_source')
@@ -396,6 +425,20 @@ def chibios_firmware(self):
 
     generate_bin_task = self.create_task('generate_bin', src=link_output, tgt=bin_target)
     generate_bin_task.set_run_after(self.link_task)
+    map_file[self.link_task.outputs[0].change_ext('.bc')] = self.link_task.inputs
+#out = self.bld.blddir()
+    script = self.bld.bldnode.find_or_declare("gen_bitcode.sh")
+    print(script)
+    with open(script.abspath(), 'w') as s:
+        for target in map_file:
+            inputs = ' '.join(str(item) for item in map_file[target])
+            cmd = self.env.get_flat('LLVMLINK') + " " + inputs + " -o " + str(target)
+            s.write(cmd + "\n")
+
+
+
+    #bc_generator = self.create_task('genBC', src=bin_target, tgt=bc)
+#bc_generator.set_run_after(generate_bin_task)
 
     generate_apj_task = self.create_task('generate_apj', src=bin_target, tgt=apj_target)
     generate_apj_task.set_run_after(generate_bin_task)
@@ -434,7 +477,6 @@ def chibios_firmware(self):
         generate_apj_task.set_run_after(generate_bin_task)
         if hex_task is not None:
             hex_task.set_run_after(generate_bin_task)
-        
     if self.bld.options.upload:
         _upload_task = self.create_task('upload_fw', src=apj_target)
         _upload_task.set_run_after(generate_apj_task)
