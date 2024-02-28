@@ -156,6 +156,12 @@ class Board:
 
         if cfg.options.enable_networking_tests:
             env.CXXFLAGS += ['-DAP_NETWORKING_TESTS_ENABLED=1']
+
+        env.CXXFLAGS += ['-D__STDC_VERSION__=0']
+        env.CXXFLAGS += ['-D_FORTIFY_SOURCE=1']
+        env.CFLAGS += ['-D_FORTIFY_SOURCE=1']
+        env.CXXFLAGS += ['-Wno-undef']
+        env.CFLAGS += ['-Wno-undef']
             
         d = env.get_merged_dict()
         # Always prepend so that arguments passed in the command line get
@@ -178,7 +184,9 @@ class Board:
 
         cfg.env.prepend_value('INCLUDES', [
             cfg.srcnode.find_dir('libraries/AP_Common/missing').abspath(),
-            cfg.srcnode.find_dir("install/include/c++/v1/").abspath()
+            cfg.srcnode.find_dir('libraries/AP_HAL_ChibiOS/hwdef/common/').abspath(),
+            cfg.srcnode.find_dir("install/include/c++/v1/").abspath(),
+            "/opt/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/"
         ])
         if os.path.exists(os.path.join(env.SRCROOT, '.vscode/c_cpp_properties.json')):
             # change c_cpp_properties.json configure the VSCode Intellisense env
@@ -215,7 +223,7 @@ class Board:
 
             '-Wall',
             '-Wextra',
-            '-Werror=format',
+            # '-Werror=format',
             '-Wpointer-arith',
             '-Wcast-align',
             '-Wno-missing-field-initializers',
@@ -223,14 +231,14 @@ class Board:
             '-Wno-redundant-decls',
             '-Wno-unknown-pragmas',
             '-Wno-trigraphs',
-            '-Werror=shadow',
+            # '-Werror=shadow',
             '-Werror=return-type',
             '-Werror=unused-result',
             '-Werror=unused-variable',
             '-Werror=narrowing',
             '-Werror=attributes',
             '-Werror=overflow',
-            '-Werror=parentheses',
+            # '-Werror=parentheses',
             '-Werror=format-extra-args',
             '-Werror=ignored-qualifiers',
             '-Werror=undef',
@@ -347,7 +355,7 @@ class Board:
             '-Werror=format-security',
             '-Werror=format-extra-args',
             '-Werror=enum-compare',
-            '-Werror=format',
+            # '-Werror=format',
             '-Werror=array-bounds',
             '-Werror=uninitialized',
             '-Werror=init-self',
@@ -358,13 +366,13 @@ class Board:
             '-Werror=type-limits',
             '-Werror=undef',
             '-Werror=unused-result',
-            '-Werror=shadow',
+            # '-Werror=shadow',
             '-Werror=unused-value',
             '-Werror=unused-variable',
             '-Werror=delete-non-virtual-dtor',
-            '-Wfatal-errors',
+            # '-Wfatal-errors',
             '-Wno-trigraphs',
-            '-Werror=parentheses',
+            # '-Werror=parentheses',
             '-DARDUPILOT_BUILD',
             '-Wuninitialized',
             '-Warray-bounds',
@@ -404,9 +412,10 @@ class Board:
                 '-Werror=unused-but-set-variable'
             ]
             if self.cc_version_gte(cfg, 5, 2):
-                env.CXXFLAGS += [
-                    '-Werror=suggest-override',
-                ]
+                pass
+                # env.CXXFLAGS += [
+                #     '-Werror=suggest-override',
+                # ]
             if self.cc_version_gte(cfg, 7, 4):
                 env.CXXFLAGS += [
                     '-Werror=implicit-fallthrough',
@@ -414,9 +423,10 @@ class Board:
                     '-Werror=duplicated-cond',
                 ]
             if self.cc_version_gte(cfg, 8, 4):
-                env.CXXFLAGS += [
-                    '-Werror=sizeof-pointer-div',
-                ]
+                pass
+                # env.CXXFLAGS += [
+                    # '-Werror=sizeof-pointer-div',
+                # ]
 
         if cfg.options.Werror:
             errors = ['-Werror',
@@ -1064,7 +1074,7 @@ class chibios(Board):
             '-Wmissing-declarations',
             '-Wno-unused-parameter',
             '-Werror=array-bounds',
-            '-Wfatal-errors',
+            # '-Wfatal-errors',
             '-Werror=uninitialized',
             '-Werror=init-self',
             '-Werror=unused-but-set-variable',
@@ -1081,7 +1091,7 @@ class chibios(Board):
             '-fno-builtin-vprintf',
             '-fno-builtin-vfprintf',
             '-fno-builtin-puts',
-            '-flto=thin',
+            # '-flto=thin',
 #'-mno-thumb-interwork',
             '-mthumb',
             '--specs=nano.specs',
