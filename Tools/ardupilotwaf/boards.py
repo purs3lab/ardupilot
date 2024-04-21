@@ -162,6 +162,8 @@ class Board:
         env.CFLAGS += ['-D_FORTIFY_SOURCE=1']
         env.CXXFLAGS += ['-Wno-undef']
         env.CFLAGS += ['-Wno-undef']
+        # env.CFLAGS += ["--sysroot", "/opt/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/"]
+        # env.CXXFLAGS += ["--sysroot", "/opt/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/"]
             
         d = env.get_merged_dict()
         # Always prepend so that arguments passed in the command line get
@@ -187,6 +189,7 @@ class Board:
             cfg.srcnode.find_dir('libraries/AP_HAL_ChibiOS/hwdef/common/').abspath(),
             cfg.srcnode.find_dir("install/include/c++/v1/").abspath(),
             "/opt/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/include/"
+            "/opt/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/include"
         ])
         if os.path.exists(os.path.join(env.SRCROOT, '.vscode/c_cpp_properties.json')):
             # change c_cpp_properties.json configure the VSCode Intellisense env
@@ -984,6 +987,8 @@ class esp32(Board):
         env.CFLAGS += [
             '-fno-inline-functions',
             '-mlongcalls',
+            '-nostdlib',
+            # '-nodefaultlibs',
             '-fsingle-precision-constant',
         ]
         env.CFLAGS.remove('-Werror=undef')
@@ -996,6 +1001,7 @@ class esp32(Board):
                          '-fno-exceptions',
                          '-fno-rtti',
                          '-nostdlib',
+                         # '-nodefaultlibs',
                          '-fstrict-volatile-bitfields',
                          '-Wno-sign-compare',
                          '-fno-inline-functions',
@@ -1141,9 +1147,14 @@ class chibios(Board):
             '-mthumb',
             '--specs=nano.specs',
             '--specs=nosys.specs',
+            # '-nostdlib',
+            # '-nodefaultlibs',
             '-L%s' % env.BUILDROOT,
             '-L%s' % cfg.srcnode.make_node('modules/ChibiOS/os/common/startup/ARMCMx/compilers/GCC/ld/').abspath(),
             '-L%s' % cfg.srcnode.make_node('libraries/AP_HAL_ChibiOS/hwdef/common/').abspath(),
+            # '-L%s' % '/opt/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/',
+            '-L%s' % '/opt/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/lib',
+            '-L%s' % '/opt/gcc-arm-none-eabi-10-2020-q4-major/lib/gcc/arm-none-eabi/10.2.1/',
             '-Wl,-Map,Linker.map,%s--cref,--gc-sections,--no-warn-mismatch,--library-path=/ld,--script=ldscript.ld,--defsym=__process_stack_size__=%s,--defsym=__main_stack_size__=%s' % ("--print-memory-usage," if cfg.env.EXT_FLASH_SIZE_MB > 0 and cfg.env.INT_FLASH_PRIMARY == 0 else "", cfg.env.PROCESS_STACK, cfg.env.MAIN_STACK)
         ]
 

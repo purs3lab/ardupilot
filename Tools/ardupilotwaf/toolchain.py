@@ -76,7 +76,7 @@ def _clang_cross_support(cfg):
 
     cfg.env.CLANG_FLAGS = [
         '--target=' + cfg.env.TOOLCHAIN,
-        '--gcc-toolchain=' + toolchain_path,
+        '--sysroot=' + toolchain_path,
         '--sysroot=' + sysroot,
         '-B' + os.path.join(toolchain_path, 'bin')
     ]
