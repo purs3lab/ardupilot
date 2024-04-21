@@ -161,7 +161,9 @@ class Board:
         env.CXXFLAGS += ['-D_FORTIFY_SOURCE=1']
         env.CFLAGS += ['-D_FORTIFY_SOURCE=1']
         env.CXXFLAGS += ['-Wno-undef']
+        env.CXXFLAGS += ['-emit-llvm']
         env.CFLAGS += ['-Wno-undef']
+        env.CFLAGS += ['-emit-llvm']
         # env.CFLAGS += ["--sysroot", "/opt/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/"]
         # env.CXXFLAGS += ["--sysroot", "/opt/gcc-arm-none-eabi-10-2020-q4-major/arm-none-eabi/"]
             
